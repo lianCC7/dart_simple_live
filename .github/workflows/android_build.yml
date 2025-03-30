@@ -33,23 +33,22 @@ jobs:
           ls -la
           echo "--------------------------------------------------"
 
+      # --- 修改这里 ---
       - name: Get Flutter dependencies
-        # 保持 working-directory 设置，如果调试发现路径不对再修改
-        working-directory: dart_simple_live
+        # 使用正确的子目录名
+        working-directory: simple_live_app
         run: flutter pub get
 
       # --- 修改这里 ---
       - name: Build APK
-        # 同样，构建命令也需要在这个子目录中执行
-        working-directory: dart_simple_live
+        # 使用正确的子目录名
+        working-directory: simple_live_app
         run: flutter build apk --release
 
       # --- 修改这里 ---
-      # 上传产物时，路径需要相对于仓库根目录
-      # 构建产物默认在 <working-directory>/build/... 下
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          # 更新路径，加上子目录前缀
-          path: dart_simple_live/build/app/outputs/flutter-apk/app-release.apk
+          # 使用正确的子目录名更新路径
+          path: simple_live_app/build/app/outputs/flutter-apk/app-release.apk
