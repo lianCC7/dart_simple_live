@@ -24,9 +24,17 @@ jobs:
           # 如果项目有特定版本要求，可以在这里指定，例如 '3.16.9'
           channel: 'stable'
 
-      # --- 修改这里 ---
+      # --- 新增：调试步骤 ---
+      - name: Debug Directory Structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "--- Listing files in current directory (Checkout root: $GITHUB_WORKSPACE) ---"
+          ls -la
+          echo "--------------------------------------------------"
+
       - name: Get Flutter dependencies
-        # 指定工作目录为包含 pubspec.yaml 的子目录
+        # 保持 working-directory 设置，如果调试发现路径不对再修改
         working-directory: dart_simple_live
         run: flutter pub get
 
