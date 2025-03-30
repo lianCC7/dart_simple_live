@@ -24,22 +24,24 @@ jobs:
           # 如果项目有特定版本要求，可以在这里指定，例如 '3.16.9'
           channel: 'stable'
 
-      # 第三步：获取项目依赖
+      # --- 修改这里 ---
       - name: Get Flutter dependencies
+        # 指定工作目录为包含 pubspec.yaml 的子目录
+        working-directory: dart_simple_live
         run: flutter pub get
 
-      # 第四步：构建 Release 版本的 APK
-      # --release 标志用于构建优化过的发布版本
-      # Flutter 默认会生成一个通用的 APK (包含 arm, arm64, x86_64)
+      # --- 修改这里 ---
       - name: Build APK
+        # 同样，构建命令也需要在这个子目录中执行
+        working-directory: dart_simple_live
         run: flutter build apk --release
 
-      # 第五步：上传构建产物 (APK 文件)
-      # 这样你就可以在 Workflow 运行结束后下载它
+      # --- 修改这里 ---
+      # 上传产物时，路径需要相对于仓库根目录
+      # 构建产物默认在 <working-directory>/build/... 下
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          # Artifact 的名字，可以自定义
           name: release-apk
-          # APK 文件在构建环境中的路径
-          path: build/app/outputs/flutter-apk/app-release.apk
+          # 更新路径，加上子目录前缀
+          path: dart_simple_live/build/app/outputs/flutter-apk/app-release.apk
