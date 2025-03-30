@@ -1,0 +1,45 @@
+name: Build Android APK
+
+# 允许手动从 Actions 标签页触发此工作流
+on:
+  workflow_dispatch:
+
+jobs:
+  build_android:
+    name: Build Flutter Android APK
+    # 使用最新的 Ubuntu 虚拟机环境
+    runs-on: ubuntu-latest
+
+    steps:
+      # 第一步：检出你的仓库代码
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 第二步：设置 Flutter 环境
+      # 使用 subosito/flutter-action 这个流行的 Action 来安装 Flutter
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          # 你可以指定 Flutter 版本或 channel，'stable' 通常是好的选择
+          # 如果项目有特定版本要求，可以在这里指定，例如 '3.16.9'
+          channel: 'stable'
+
+      # 第三步：获取项目依赖
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      # 第四步：构建 Release 版本的 APK
+      # --release 标志用于构建优化过的发布版本
+      # Flutter 默认会生成一个通用的 APK (包含 arm, arm64, x86_64)
+      - name: Build APK
+        run: flutter build apk --release
+
+      # 第五步：上传构建产物 (APK 文件)
+      # 这样你就可以在 Workflow 运行结束后下载它
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Artifact 的名字，可以自定义
+          name: release-apk
+          # APK 文件在构建环境中的路径
+          path: build/app/outputs/flutter-apk/app-release.apk
